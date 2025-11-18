@@ -39,6 +39,7 @@ public class ItemManager {
 
     // --- 아이템 관리 ---
     public void addItem(Item item) {
+
         itemList.add(item);
         saveItems();
     }

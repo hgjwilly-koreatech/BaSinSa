@@ -6,13 +6,13 @@ import com.inventory.manager.SalesManager;
 import com.inventory.model.*;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MainWindow extends JFrame {
 
@@ -31,7 +31,7 @@ public class MainWindow extends JFrame {
         this.loggedInMember = member;
 
         setTitle("👖 재고 관리 (" + member.getName() + "님)");
-        setSize(1100, 700); // 버튼 크기 확보를 위해 전체 창 크기 약간 증대
+        setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
@@ -87,22 +87,19 @@ public class MainWindow extends JFrame {
 
             functionPanel.add(Box.createVerticalStrut(20)); // 그룹 간격
 
-            // 관리 버튼
+            // 관리 버튼 (목록 보기는 제거됨)
             functionPanel.add(createStyledButton("사원 관리", e -> showMemberManagement()));
-            functionPanel.add(Box.createVerticalStrut(5));
-            functionPanel.add(createStyledButton("사원 목록 보기", e -> showMemberList()));
             functionPanel.add(Box.createVerticalStrut(5));
             functionPanel.add(createStyledButton("주간 매출 확인", e -> showWeeklySales()));
         }
 
-        // 기능 패널을 좌측 패널의 중앙(CENTER) 대신 상단(NORTH)에 배치하여 위로 정렬
+        // 기능 패널을 좌측 패널의 상단(NORTH)에 배치
         JPanel topContainer = new JPanel(new BorderLayout());
         topContainer.add(functionPanel, BorderLayout.NORTH);
         leftPanel.add(topContainer, BorderLayout.CENTER);
 
         // --- 하단: 로그아웃 버튼 ---
         JButton logoutBtn = createStyledButton("로그아웃", e -> logout());
-        // 로그아웃 버튼 색상 약간 다르게 (선택사항)
         logoutBtn.setForeground(Color.RED);
 
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -161,10 +158,8 @@ public class MainWindow extends JFrame {
                     int selectedRow = itemTable.getSelectedRow();
                     if (selectedRow >= 0) {
                         Item selectedItem = tableModel.getItemAt(selectedRow);
-                        // 상세 정보 팝업 띄우기
                         ItemDetailPopup popup = new ItemDetailPopup(MainWindow.this, selectedItem, loggedInMember);
                         popup.setVisible(true);
-                        // 팝업이 닫힌 후 테이블 갱신 (팝업에서 변경이 일어났을 수 있으므로)
                         refreshTableData();
                     }
                 }
@@ -175,7 +170,7 @@ public class MainWindow extends JFrame {
     }
 
     /**
-     * 테이블 데이터를 갱신 (로그인한 멤버에 따라 다르게)
+     * 테이블 데이터를 갱신
      */
     public void refreshTableData() {
         List<Item> itemsToShow;
@@ -199,7 +194,7 @@ public class MainWindow extends JFrame {
         tableModel.setItems(itemsToShow);
     }
 
-    // --- CEO 기능 다이얼로그 ---
+    // --- CEO 기능 ---
 
     private void showWeeklySales() {
         int sales = SalesManager.getInstance().getWeeklySales();
@@ -209,57 +204,157 @@ public class MainWindow extends JFrame {
                 JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void showMemberList() {
-        List<Member> members = AccountManager.getInstance().getMemberList();
-        String list = members.stream()
-                .map(m -> String.format("[%s] %s (%s)", m.getMemberType(), m.getName(), m.getId()))
-                .collect(Collectors.joining("\n"));
-
-        JTextArea textArea = new JTextArea(list);
-        textArea.setEditable(false);
-        JOptionPane.showMessageDialog(this, new JScrollPane(textArea), "전체 사원 목록", JOptionPane.PLAIN_MESSAGE);
-    }
-
+    /**
+     * 사원 관리 통합 팝업 (리스트 + 추가/삭제)
+     */
     private void showMemberManagement() {
-        String action = (String) JOptionPane.showInputDialog(this, "수행할 작업을 선택하세요:", "사원 관리",
-                JOptionPane.PLAIN_MESSAGE, null, new String[]{"사원 추가", "사원 삭제"}, "사원 추가");
+        JDialog dialog = new JDialog(this, "사원 관리", true); // Modal
+        dialog.setSize(600, 500);
+        dialog.setLocationRelativeTo(this);
+        dialog.setLayout(new BorderLayout());
 
-        if (action == null) return;
-
-        AccountManager accManager = AccountManager.getInstance();
-
-        if (action.equals("사원 추가")) {
-            String type = (String) JOptionPane.showInputDialog(this, "사원 유형:", "사원 추가",
-                    JOptionPane.PLAIN_MESSAGE, null, new String[]{"Normal", "ESG"}, "Normal");
-            if(type == null) return;
-
-            String id = JOptionPane.showInputDialog(this, "새 사원 ID:");
-            if(id == null || id.trim().isEmpty()) return;
-
-            String pw = JOptionPane.showInputDialog(this, "새 사원 PW:");
-            if(pw == null || pw.trim().isEmpty()) return;
-
-            String name = JOptionPane.showInputDialog(this, "새 사원 이름:");
-            if(name == null || name.trim().isEmpty()) return;
-
-            try {
-                accManager.addMember(type, id, pw, name);
-                JOptionPane.showMessageDialog(this, "사원이 추가되었습니다.");
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "추가 실패", JOptionPane.ERROR_MESSAGE);
+        // --- 1. 상단 사원 리스트 테이블 (화면의 약 80%) ---
+        String[] columnNames = {"유형", "ID", "비밀번호", "이름"};
+        DefaultTableModel memberTableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // 편집 불가
             }
+        };
 
-        } else if (action.equals("사원 삭제")) {
-            String id = JOptionPane.showInputDialog(this, "삭제할 사원 ID:");
-            if (id == null || id.trim().isEmpty()) return;
+        JTable memberTable = new JTable(memberTableModel);
+        memberTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        memberTable.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+        memberTable.setRowHeight(30); // 가독성을 위해 행 높이 조절
 
-            if (accManager.findMember(id).map(m -> m instanceof CEO).orElse(false)) {
-                JOptionPane.showMessageDialog(this, "CEO 계정은 삭제할 수 없습니다.", "삭제 불가", JOptionPane.WARNING_MESSAGE);
+        JScrollPane scrollPane = new JScrollPane(memberTable);
+        dialog.add(scrollPane, BorderLayout.CENTER);
+
+        // 데이터 로드 함수
+        Runnable loadData = () -> {
+            memberTableModel.setRowCount(0);
+            List<Member> members = AccountManager.getInstance().getMemberList();
+            for (Member m : members) {
+                memberTableModel.addRow(new Object[]{m.getMemberType(), m.getId(), m.getPassword(), m.getName()});
+            }
+        };
+        loadData.run(); // 초기 로드
+
+        // --- 2. 하단 버튼 패널 (화면의 약 20%) ---
+        JPanel bottomPanel = new JPanel(new BorderLayout());
+        // 높이를 전체의 20% 정도로 설정 (500px * 0.2 = 100px)
+        bottomPanel.setPreferredSize(new Dimension(0, 100));
+        bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 20)); // 좌우 여백
+
+        // 버튼 높이 설정 (패널 높이의 중간 정도, 약 40px)
+        Dimension btnDim = new Dimension(90, 40);
+
+        // 좌측 버튼 그룹 (추가, 삭제)
+        JPanel leftBtnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 30)); // 수직 정렬을 위해 vgap 30
+
+        JButton addBtn = new JButton("추가");
+        addBtn.setPreferredSize(btnDim);
+        addBtn.setBackground(new Color(34, 139, 34)); // 초록색 (Forest Green)
+        addBtn.setForeground(Color.BLACK);
+        addBtn.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+
+        JButton delBtn = new JButton("삭제");
+        delBtn.setPreferredSize(btnDim);
+        delBtn.setBackground(new Color(220, 20, 60)); // 빨간색 (Crimson)
+        delBtn.setForeground(Color.BLACK);
+        delBtn.setFont(new Font("맑은 고딕", Font.BOLD, 14));
+
+        leftBtnPanel.add(addBtn);
+        leftBtnPanel.add(delBtn);
+
+        // 우측 버튼 그룹 (닫기)
+        JPanel rightBtnPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 30));
+        JButton closeBtn = new JButton("닫기");
+        closeBtn.setPreferredSize(btnDim);
+        rightBtnPanel.add(closeBtn);
+
+        bottomPanel.add(leftBtnPanel, BorderLayout.WEST);
+        bottomPanel.add(rightBtnPanel, BorderLayout.EAST);
+
+        dialog.add(bottomPanel, BorderLayout.SOUTH);
+
+        // --- 이벤트 리스너 등록 ---
+
+        // 닫기 버튼
+        closeBtn.addActionListener(e -> dialog.dispose());
+
+        // 추가 버튼
+        addBtn.addActionListener(e -> {
+            // 통합 입력 패널 생성
+            JPanel inputPanel = new JPanel(new GridLayout(4, 2, 5, 5));
+
+            JComboBox<String> typeCombo = new JComboBox<>(new String[]{"Normal", "ESG"});
+            JTextField idField = new JTextField();
+            JTextField pwField = new JTextField();
+            JTextField nameField = new JTextField();
+
+            inputPanel.add(new JLabel("사원 유형:"));
+            inputPanel.add(typeCombo);
+            inputPanel.add(new JLabel("ID:"));
+            inputPanel.add(idField);
+            inputPanel.add(new JLabel("비밀번호:"));
+            inputPanel.add(pwField);
+            inputPanel.add(new JLabel("이름:"));
+            inputPanel.add(nameField);
+
+            int result = JOptionPane.showConfirmDialog(dialog, inputPanel,
+                    "새 사원 등록", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+            if (result == JOptionPane.OK_OPTION) {
+                String type = (String) typeCombo.getSelectedItem();
+                String id = idField.getText().trim();
+                String pw = pwField.getText().trim();
+                String name = nameField.getText().trim();
+
+                // 유효성 검사
+                if (id.isEmpty() || pw.isEmpty() || name.isEmpty()) {
+                    JOptionPane.showMessageDialog(dialog, "모든 정보를 입력해야 합니다.", "입력 오류", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                try {
+                    AccountManager.getInstance().addMember(type, id, pw, name);
+                    loadData.run(); // 테이블 갱신
+                    JOptionPane.showMessageDialog(dialog, "사원이 추가되었습니다.");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(dialog, "추가 실패: " + ex.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // 삭제 버튼
+        delBtn.addActionListener(e -> {
+            int selectedRow = memberTable.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(dialog, "삭제할 사원을 목록에서 선택해주세요.", "선택 필요", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
-            accManager.removeMember(id);
-            JOptionPane.showMessageDialog(this, id + " 계정이 삭제되었습니다.");
-        }
+            String type = (String) memberTableModel.getValueAt(selectedRow, 0);
+            String id = (String) memberTableModel.getValueAt(selectedRow, 1);
+            String name = (String) memberTableModel.getValueAt(selectedRow, 3);
+
+            if ("CEO".equals(type)) {
+                JOptionPane.showMessageDialog(dialog, "CEO 계정은 삭제할 수 없습니다.", "삭제 불가", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(dialog,
+                    "[" + type + "] " + name + " (" + id + ") 사원을 정말 삭제하시겠습니까?",
+                    "삭제 확인", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                AccountManager.getInstance().removeMember(id);
+                loadData.run(); // 테이블 갱신
+                JOptionPane.showMessageDialog(dialog, "삭제되었습니다.");
+            }
+        });
+
+        dialog.setVisible(true);
     }
 }

@@ -1,7 +1,6 @@
 package com.inventory.model;
 
 import com.inventory.manager.ItemManager;
-
 import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -56,10 +55,17 @@ public class ESGMember extends Member implements IItemManagable {
         }
     }
 
+    /**
+     * ESG 사원에게 outgoing은 '폐기'를 의미합니다.
+     * 매출을 올리지 않고 아이템을 리스트에서 제거합니다.
+     */
     @Override
     public void outgoing(Item item) {
-        // ESG 사원은 출고 기능이 없음 (요구사항에 따라)
-        System.out.println("ESG 사원은 출고 기능이 없습니다.");
+        if (item.getLocation() == ItemLocation.ESG) {
+            ItemManager.getInstance().removeItem(item);
+            // SalesManager 호출하지 않음 (폐기이므로 매출 0)
+            System.out.println("ESG 아이템 폐기 완료: " + item.getItemNumber());
+        }
     }
 
     /**

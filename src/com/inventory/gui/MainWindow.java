@@ -14,7 +14,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainWindow extends JFrame {
+// ItemObserver 인터페이스 구현
+public class MainWindow extends JFrame implements ItemObserver {
 
     private Member loggedInMember;
     private JTable itemTable;
@@ -36,13 +37,19 @@ public class MainWindow extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
+        // 옵저버 등록 (이제 ItemManager가 변경되면 이 클래스에 알림을 줌)
+        ItemManager.getInstance().addObserver(this);
+
         // 1. 좌측 버튼 패널 (전체 레이아웃의 WEST)
         add(createLeftPanel(), BorderLayout.WEST);
 
         // 2. 중앙 테이블 패널 (전체 레이아웃의 CENTER)
         add(createTablePanel(), BorderLayout.CENTER);
 
-        // 3. 초기 데이터 로드
+        // 3. 하단 상태바 패널 추가 (전체 레이아웃의 SOUTH)
+        add(new StatusPanel(), BorderLayout.SOUTH);
+
+        // 4. 초기 데이터 로드
         refreshTableData();
     }
 
@@ -65,8 +72,9 @@ public class MainWindow extends JFrame {
         // 멤버 타입별 버튼 추가
         if (loggedInMember instanceof IItemManagable) {
             functionPanel.add(createStyledButton("새 재고 추가", e -> {
+                // 옵저버 패턴 적용으로 인해 수동 refreshTableData() 제거 가능하지만
+                // 명시적인 호출이 필요 없는 경우에도 비동기 타이밍 이슈 방지 등을 위해 남겨둘 수 있음
                 ((IItemManagable) loggedInMember).add(this);
-                refreshTableData();
             }));
             functionPanel.add(Box.createVerticalStrut(10));
         }
@@ -87,7 +95,7 @@ public class MainWindow extends JFrame {
 
             functionPanel.add(Box.createVerticalStrut(20)); // 그룹 간격
 
-            // 관리 버튼 (목록 보기는 제거됨)
+            // 관리 버튼
             functionPanel.add(createStyledButton("사원 관리", e -> showMemberManagement()));
             functionPanel.add(Box.createVerticalStrut(5));
             functionPanel.add(createStyledButton("주간 매출 확인", e -> showWeeklySales()));
@@ -136,6 +144,8 @@ public class MainWindow extends JFrame {
                 "로그아웃 하시겠습니까?", "로그아웃", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
+            // 로그아웃 시 옵저버 해제 (중요: 메모리 누수 방지)
+            ItemManager.getInstance().removeObserver(this);
             this.dispose(); // 현재 메인 창 닫기
             new LoginWindow().setVisible(true); // 로그인 창 다시 열기
         }
@@ -160,7 +170,6 @@ public class MainWindow extends JFrame {
                         Item selectedItem = tableModel.getItemAt(selectedRow);
                         ItemDetailPopup popup = new ItemDetailPopup(MainWindow.this, selectedItem, loggedInMember);
                         popup.setVisible(true);
-                        refreshTableData();
                     }
                 }
             }
@@ -192,6 +201,24 @@ public class MainWindow extends JFrame {
         }
 
         tableModel.setItems(itemsToShow);
+    }
+
+    // --- ItemObserver 인터페이스 구현 ---
+    // ItemManager에서 변경이 발생하면 자동으로 이 메서드들이 호출됩니다.
+
+    @Override
+    public void onItemAdded(Item item) {
+        refreshTableData();
+    }
+
+    @Override
+    public void onItemRemoved(Item item) {
+        refreshTableData();
+    }
+
+    @Override
+    public void onItemUpdated(Item item) {
+        refreshTableData();
     }
 
     // --- CEO 기능 ---
@@ -255,12 +282,14 @@ public class MainWindow extends JFrame {
         JButton addBtn = new JButton("추가");
         addBtn.setPreferredSize(btnDim);
         addBtn.setBackground(new Color(34, 139, 34)); // 초록색 (Forest Green)
+        // [수정됨] 글자색 검정으로 변경
         addBtn.setForeground(Color.BLACK);
         addBtn.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 
         JButton delBtn = new JButton("삭제");
         delBtn.setPreferredSize(btnDim);
         delBtn.setBackground(new Color(220, 20, 60)); // 빨간색 (Crimson)
+        // [수정됨] 글자색 검정으로 변경
         delBtn.setForeground(Color.BLACK);
         delBtn.setFont(new Font("맑은 고딕", Font.BOLD, 14));
 

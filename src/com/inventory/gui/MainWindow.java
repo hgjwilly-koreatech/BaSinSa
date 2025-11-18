@@ -1,12 +1,13 @@
 package com.inventory.gui;
 
-import com.inventory.model.*;
 import com.inventory.manager.AccountManager;
 import com.inventory.manager.ItemManager;
 import com.inventory.manager.SalesManager;
+import com.inventory.model.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -19,6 +20,9 @@ public class MainWindow extends JFrame {
     private JTable itemTable;
     private ItemTableModel tableModel;
 
+    // 버튼 공통 사이즈 지정 (좌측 패널 너비에 맞춤)
+    private static final Dimension BUTTON_SIZE = new Dimension(160, 40);
+
     // CEO용 필터
     private enum ViewFilter { ALL, NORMAL, ESG }
     private ViewFilter currentFilter = ViewFilter.ALL;
@@ -27,15 +31,15 @@ public class MainWindow extends JFrame {
         this.loggedInMember = member;
 
         setTitle("👖 재고 관리 (" + member.getName() + "님)");
-        setSize(1000, 600);
+        setSize(1100, 700); // 버튼 크기 확보를 위해 전체 창 크기 약간 증대
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout(10, 10));
 
-        // 1. 좌측 버튼 패널
-        add(createButtonPanel(), BorderLayout.WEST);
+        // 1. 좌측 버튼 패널 (전체 레이아웃의 WEST)
+        add(createLeftPanel(), BorderLayout.WEST);
 
-        // 2. 중앙 테이블 패널
+        // 2. 중앙 테이블 패널 (전체 레이아웃의 CENTER)
         add(createTablePanel(), BorderLayout.CENTER);
 
         // 3. 초기 데이터 로드
@@ -43,63 +47,101 @@ public class MainWindow extends JFrame {
     }
 
     /**
-     * 좌측의 기능 버튼 패널을 생성
+     * 좌측 전체 패널 생성 (상단: 기능 버튼 / 하단: 로그아웃)
      */
-    private JPanel createButtonPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // 버튼을 수직으로 배치
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        panel.setPreferredSize(new Dimension(180, 0));
+    private JPanel createLeftPanel() {
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        leftPanel.setPreferredSize(new Dimension(190, 0)); // 좌측 영역 고정 너비
+
+        // --- 상단: 기능 버튼 그룹 ---
+        JPanel functionPanel = new JPanel();
+        functionPanel.setLayout(new BoxLayout(functionPanel, BoxLayout.Y_AXIS));
 
         // 공통: 새로고침
-        JButton refreshBtn = new JButton("목록 새로고침");
-        refreshBtn.addActionListener(e -> refreshTableData());
-        panel.add(refreshBtn);
-        panel.add(Box.createVerticalStrut(10)); // 공백
+        functionPanel.add(createStyledButton("목록 새로고침", e -> refreshTableData()));
+        functionPanel.add(Box.createVerticalStrut(10)); // 간격
 
         // 멤버 타입별 버튼 추가
         if (loggedInMember instanceof IItemManagable) {
-            JButton addBtn = new JButton("새 재고 추가");
-            addBtn.addActionListener(e -> {
+            functionPanel.add(createStyledButton("새 재고 추가", e -> {
                 ((IItemManagable) loggedInMember).add(this);
-                refreshTableData(); // 추가 후 테이블 갱신
-            });
-            panel.add(addBtn);
+                refreshTableData();
+            }));
+            functionPanel.add(Box.createVerticalStrut(10));
         }
 
         if (loggedInMember instanceof CEO) {
-            panel.add(new JLabel("--- CEO 메뉴 ---"));
+            // 구분선 라벨
+            JLabel label = new JLabel("--- CEO 메뉴 ---");
+            label.setAlignmentX(Component.CENTER_ALIGNMENT);
+            functionPanel.add(label);
+            functionPanel.add(Box.createVerticalStrut(5));
 
-            // CEO 재고 필터 버튼
-            JButton viewAllBtn = new JButton("전체 재고 보기");
-            viewAllBtn.addActionListener(e -> { currentFilter = ViewFilter.ALL; refreshTableData(); });
-            panel.add(viewAllBtn);
+            // 필터 버튼
+            functionPanel.add(createStyledButton("전체 재고 보기", e -> { currentFilter = ViewFilter.ALL; refreshTableData(); }));
+            functionPanel.add(Box.createVerticalStrut(5));
+            functionPanel.add(createStyledButton("일반 재고 보기", e -> { currentFilter = ViewFilter.NORMAL; refreshTableData(); }));
+            functionPanel.add(Box.createVerticalStrut(5));
+            functionPanel.add(createStyledButton("ESG 재고 보기", e -> { currentFilter = ViewFilter.ESG; refreshTableData(); }));
 
-            JButton viewNormalBtn = new JButton("일반 재고 보기");
-            viewNormalBtn.addActionListener(e -> { currentFilter = ViewFilter.NORMAL; refreshTableData(); });
-            panel.add(viewNormalBtn);
+            functionPanel.add(Box.createVerticalStrut(20)); // 그룹 간격
 
-            JButton viewEsgBtn = new JButton("ESG 재고 보기");
-            viewEsgBtn.addActionListener(e -> { currentFilter = ViewFilter.ESG; refreshTableData(); });
-            panel.add(viewEsgBtn);
-
-            panel.add(Box.createVerticalStrut(10));
-
-            // CEO 사원/매출 관리
-            JButton manageMemberBtn = new JButton("사원 관리");
-            manageMemberBtn.addActionListener(e -> showMemberManagement());
-            panel.add(manageMemberBtn);
-
-            JButton viewMembersBtn = new JButton("사원 목록 보기");
-            viewMembersBtn.addActionListener(e -> showMemberList());
-            panel.add(viewMembersBtn);
-
-            JButton viewSalesBtn = new JButton("주간 매출 확인");
-            viewSalesBtn.addActionListener(e -> showWeeklySales());
-            panel.add(viewSalesBtn);
+            // 관리 버튼
+            functionPanel.add(createStyledButton("사원 관리", e -> showMemberManagement()));
+            functionPanel.add(Box.createVerticalStrut(5));
+            functionPanel.add(createStyledButton("사원 목록 보기", e -> showMemberList()));
+            functionPanel.add(Box.createVerticalStrut(5));
+            functionPanel.add(createStyledButton("주간 매출 확인", e -> showWeeklySales()));
         }
 
-        return panel;
+        // 기능 패널을 좌측 패널의 중앙(CENTER) 대신 상단(NORTH)에 배치하여 위로 정렬
+        JPanel topContainer = new JPanel(new BorderLayout());
+        topContainer.add(functionPanel, BorderLayout.NORTH);
+        leftPanel.add(topContainer, BorderLayout.CENTER);
+
+        // --- 하단: 로그아웃 버튼 ---
+        JButton logoutBtn = createStyledButton("로그아웃", e -> logout());
+        // 로그아웃 버튼 색상 약간 다르게 (선택사항)
+        logoutBtn.setForeground(Color.RED);
+
+        JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.add(logoutBtn);
+
+        leftPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        return leftPanel;
+    }
+
+    /**
+     * 크기와 스타일이 통일된 버튼을 생성하는 헬퍼 메서드
+     */
+    private JButton createStyledButton(String text, ActionListener action) {
+        JButton btn = new JButton(text);
+        btn.addActionListener(action);
+
+        // 크기 고정
+        btn.setPreferredSize(BUTTON_SIZE);
+        btn.setMaximumSize(BUTTON_SIZE);
+        btn.setMinimumSize(BUTTON_SIZE);
+
+        // 정렬 중앙
+        btn.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        return btn;
+    }
+
+    /**
+     * 로그아웃 처리
+     */
+    private void logout() {
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "로그아웃 하시겠습니까?", "로그아웃", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            this.dispose(); // 현재 메인 창 닫기
+            new LoginWindow().setVisible(true); // 로그인 창 다시 열기
+        }
     }
 
     /**
@@ -179,8 +221,6 @@ public class MainWindow extends JFrame {
     }
 
     private void showMemberManagement() {
-        // 간단한 사원 관리 (JDialog로 구현)
-        // (실제로는 더 복잡한 GUI가 필요)
         String action = (String) JOptionPane.showInputDialog(this, "수행할 작업을 선택하세요:", "사원 관리",
                 JOptionPane.PLAIN_MESSAGE, null, new String[]{"사원 추가", "사원 삭제"}, "사원 추가");
 

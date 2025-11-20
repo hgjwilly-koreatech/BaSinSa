@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-/**
- * 바지(Item) 클래스
- */
+
 public class Item {
     private String itemNumber;  // 물품 번호 (자동 지정)
     private PantsType type;     // 바지 종류
@@ -20,19 +18,7 @@ public class Item {
     // 파일 저장을 위한 포맷
     private static final DateTimeFormatter TxtFormat = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-    // 생성자 (새 물품 입고 시)
-    public Item(PantsType type, String material, String quality, int price) {
-        this.itemNumber = UUID.randomUUID().toString().substring(0, 8); // 랜덤 물품 번호
-        this.type = type;
-        this.material = material;
-        this.quality = quality;
-        this.price = price;
-        this.isESG = false; // 일반사원 입고 시 기본 false
-        this.location = ItemLocation.NORMAL; // 일반사원 입고 시 기본 일반재고
-        this.entryDate = LocalDateTime.now(); // 현재 시간 자동 입력
-    }
-
-    // 파일에서 불러올 때 사용하는 생성자 (모든 필드)
+    // 모든 필드 생성자(빌더 패턴 사용, 파일 읽기의 경우에는 그대로 사용)
     public Item(String itemNumber, PantsType type, boolean isESG, String material,
                 String quality, int price, ItemLocation location, LocalDateTime entryDate) {
         this.itemNumber = itemNumber;

@@ -37,7 +37,13 @@ public class NormalMember extends Member implements IItemManagable {
             PantsType type = PantsType.valueOf(typeStr);
 
             // Item 생성자에서 isESG, location, itemNum, date가 자동 설정됨
-            Item newItem = new Item(type, material, quality, price);
+            Item newItem = new ItemBuilder()
+                    .type(type)
+                    .isESG(false)
+                    .location(ItemLocation.NORMAL)
+                    .material(material)
+                    .quality(quality)
+                    .price(price).Build();
 
             ItemManager.getInstance().addItem(newItem);
             JOptionPane.showMessageDialog(owner, "새 바지가 입고되었습니다. (번호: " + newItem.getItemNumber() + ")");

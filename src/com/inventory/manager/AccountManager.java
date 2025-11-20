@@ -34,7 +34,11 @@ public class AccountManager {
 
     public void addMember(String type, String id, String password, String name) {
         // ID 중복 체크
-        if (memberList.stream().anyMatch(m -> m.getId().equals(id))) {
+        boolean isDuplicate = false;
+        for (int i = 0; i < this.memberList.size(); i++) {
+            if(this.memberList.get(i).getId().equals(id)) isDuplicate = true;
+        }
+        if (isDuplicate) {
             throw new IllegalArgumentException("이미 사용 중인 ID입니다.");
         }
 
@@ -58,9 +62,6 @@ public class AccountManager {
         saveMembers();
     }
 
-    public Optional<Member> findMember(String id) {
-        return memberList.stream().filter(m -> m.getId().equals(id)).findFirst();
-    }
 
     private void saveMembers() {
         FileHandler.saveMembers(MEMBER_FILE, memberList);

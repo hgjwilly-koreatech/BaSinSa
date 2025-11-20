@@ -44,8 +44,8 @@ public class FileHandler {
                 }
             }
         } catch (IOException e) {
-            System.out.println("끼야악00");
-            e.printStackTrace();
+            System.out.print("끼야악00 - ");
+            System.out.println(e.getMessage());
         }
         return members;
     }
@@ -57,7 +57,8 @@ public class FileHandler {
                 bw.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.print("끼야악00 - ");
+            System.out.println(e.getMessage());
         }
     }
 
@@ -76,7 +77,8 @@ public class FileHandler {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.print("끼야악00 - ");
+            System.out.println(e.getMessage());
         }
         return items;
     }
@@ -88,7 +90,8 @@ public class FileHandler {
                 bw.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.print("끼야악00 - ");
+            System.out.println(e.getMessage());
         }
     }
 
@@ -108,7 +111,8 @@ public class FileHandler {
                 sales.put(date, sales.getOrDefault(date, 0) + amount);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.print("끼야악00 - ");
+            System.out.println(e.getMessage());
         }
         return sales;
     }
@@ -120,7 +124,8 @@ public class FileHandler {
                 bw.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.print("끼야악00 - ");
+            System.out.println(e.getMessage());
         }
     }
 }

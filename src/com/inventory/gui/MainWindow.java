@@ -57,9 +57,7 @@ public class MainWindow extends JFrame implements ItemObserver {
         refreshTableData();
     }
 
-    /**
-     * 좌측 전체 패널 생성
-     */
+    //좌측 전체 패널 생성
     private JPanel createLeftPanel() {
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -172,10 +170,16 @@ public class MainWindow extends JFrame implements ItemObserver {
             itemsToShow = manager.getESGItems();
         } else if (loggedInMember instanceof CEO) {
             switch (currentFilter) {
-                case NORMAL: itemsToShow = manager.getNormalItems(); break;
-                case ESG: itemsToShow = manager.getESGItems(); break;
+                case NORMAL:
+                    itemsToShow = manager.getNormalItems();
+                    break;
+                case ESG:
+                    itemsToShow = manager.getESGItems();
+                    break;
                 case ALL:
-                default: itemsToShow = manager.getAllItems(); break;
+                default:
+                    itemsToShow = manager.getAllItems();
+                    break;
             }
         } else {
             itemsToShow = new ArrayList<>();
@@ -191,11 +195,7 @@ public class MainWindow extends JFrame implements ItemObserver {
     @Override
     public void onItemUpdated(Item item) { refreshTableData(); }
 
-    // --- CEO 기능 ---
-
-    /**
-     * 주간 및 전체 매출 확인 (테이블: 전체 데이터, 강조: 최근 7일)
-     */
+    //주간 및 전체 매출 확인 (테이블: 전체 데이터, 강조: 최근 7일)
     private void showWeeklySales() {
         JDialog dialog = new JDialog(this, "전체 매출 현황 (최근 7일 강조)", true);
         dialog.setSize(500, 600);

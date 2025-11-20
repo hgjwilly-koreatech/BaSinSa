@@ -11,13 +11,10 @@ public class Main {
             // OS 기본 테마 적용 (선택 사항)
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
-        // Swing GUI는 Event Dispatch Thread(EDT)에서 실행해야 함
-        SwingUtilities.invokeLater(() -> {
-            LoginWindow loginWindow = new LoginWindow();
-            loginWindow.setVisible(true);
-        });
+        LoginWindow loginWindow = new LoginWindow();
+        loginWindow.setVisible(true);
     }
 }

@@ -21,23 +21,7 @@ public class ESGMember extends Member implements IItemManagable {
 
     @Override
     public void add(JFrame owner) {
-        // 헌옷 수거함에서 가져오는 컨셉 (모든 속성 랜덤)
-        PantsType randType = PantsType.values()[rand.nextInt(PantsType.values().length)];
-        String randMaterial = new String[]{"데님", "면", "폴리에스터", "혼방"}[rand.nextInt(4)];
-        String randQuality = new String[]{"상", "중", "하"}[rand.nextInt(3)];
-        int randPrice = (rand.nextInt(5) + 1) * 1000; // 1000 ~ 5000
-        String randItemNum = UUID.randomUUID().toString().substring(0, 8);
-
-        Item newItem = new Item(
-                randItemNum,
-                randType,
-                false, // 헌옷이므로 ESG 활용 여부는 false
-                randMaterial,
-                randQuality,
-                randPrice,
-                ItemLocation.ESG, // ESG 재고로 바로 추가
-                LocalDateTime.now()
-        );
+        Item newItem = new ItemBuilder().BuildRandom();
 
         ItemManager.getInstance().addItem(newItem);
         JOptionPane.showMessageDialog(owner, "ESG 재고(헌옷)가 추가되었습니다. (번호: " + newItem.getItemNumber() + ")");

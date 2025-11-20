@@ -4,9 +4,7 @@ import com.inventory.model.*;
 import javax.swing.*;
 import java.awt.*;
 
-/**
- * 아이템 클릭 시 상세 정보와 기능 버튼을 보여주는 JDialog
- */
+//아이템 클릭 시 상세 정보와 기능 버튼을 보여주는 JDialog
 public class ItemDetailPopup extends JDialog {
 
     public ItemDetailPopup(MainWindow owner, Item item, Member member) {
@@ -41,13 +39,11 @@ public class ItemDetailPopup extends JDialog {
         boolean isNormalMember = (manager instanceof NormalMember);
         boolean isESGMember = (manager instanceof ESGMember);
 
-        // --- 조건 확인 (자신의 담당 구역 아이템인지) ---
         boolean canManage = false;
         if (isNormalMember && item.getLocation() == ItemLocation.NORMAL) canManage = true;
         if (isESGMember && item.getLocation() == ItemLocation.ESG) canManage = true;
 
         if (canManage) {
-            // 1. Move 버튼 (공통)
             String moveLabel = isNormalMember ? "ESG 재고로 이동" : "일반 재고로 이동";
             JButton moveBtn = new JButton(moveLabel);
             moveBtn.addActionListener(e -> {
@@ -56,7 +52,6 @@ public class ItemDetailPopup extends JDialog {
             });
             panel.add(moveBtn);
 
-            // 2. Outgoing 버튼 (공통 인터페이스, 역할은 다름)
             String outLabel = isNormalMember ? "출고 (판매)" : "폐기";
             JButton outBtn = new JButton(outLabel);
 

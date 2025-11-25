@@ -6,6 +6,7 @@ import javax.swing.table.AbstractTableModel;
 import java.util.List;
 
 
+//JTable에 Item 리스트를 표시하기 위한 커스텀 테이블 모델
 public class ItemTableModel extends AbstractTableModel {
 
     private final String[] columnNames = {"물품번호", "종류", "재질", "품질", "위치", "ESG", "단가", "입고일"};

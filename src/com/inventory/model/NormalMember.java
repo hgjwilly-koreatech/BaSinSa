@@ -19,8 +19,7 @@ public class NormalMember extends Member implements IItemManagable {
 
     @Override
     public void add(JFrame owner) {
-        // GUI 팝업을 통해 사용자 입력 받기 (간략화)
-        // 실제로는 JDialog를 만들어 JComboBox, JTextField 등을 사용해야 함
+        // GUI 팝업을 통해 사용자 입력 받기
         try {
             String typeStr = (String) JOptionPane.showInputDialog(owner, "바지 종류:", "새 바지 입고",
                     JOptionPane.PLAIN_MESSAGE, null, new String[]{"LONG", "SEVENTH", "HALF", "SHORTS"}, "LONG");
@@ -36,7 +35,6 @@ public class NormalMember extends Member implements IItemManagable {
 
             PantsType type = PantsType.valueOf(typeStr);
 
-            // Item 생성자에서 isESG, location, itemNum, date가 자동 설정됨
             Item newItem = new ItemBuilder()
                     .type(type)
                     .isESG(false)

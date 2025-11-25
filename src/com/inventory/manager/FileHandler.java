@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class FileHandler {
     public static List<Member> loadMembers(String filename) {
         List<Member> members = new ArrayList<>();

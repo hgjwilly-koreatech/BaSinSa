@@ -2,7 +2,7 @@ package com.inventory.manager;
 
 import com.inventory.model.Item;
 import com.inventory.model.ItemLocation;
-import com.inventory.model.ItemObserver; // 추가됨
+import com.inventory.model.ItemObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +82,6 @@ public class ItemManager {
     }
 
     public void updateItem(Item item) {
-        // Java List는 객체 참조이므로, item 객체의 필드가 변경되면
-        // 리스트 내의 객체도 이미 변경된 상태입니다.
         saveItems();
         notifyItemUpdated(item); // 알림 발송
     }

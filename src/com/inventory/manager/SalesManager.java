@@ -9,7 +9,6 @@ public class SalesManager {
     private static final SalesManager instance = new SalesManager();
     private static final String SALES_FILE = "sales.txt";
 
-    // 일자별 총 매출 저장
     private Map<LocalDate, Integer> dailySales;
 
     private SalesManager() {
@@ -24,14 +23,10 @@ public class SalesManager {
         LocalDate date = timestamp.toLocalDate();
         dailySales.put(date, dailySales.getOrDefault(date, 0) + amount);
 
-        // 매출 발생 시마다 즉시 저장
-        // (성능이 중요하다면 주기적으로 저장하거나 종료 시점에 저장)
         FileHandler.saveSales(SALES_FILE, dailySales);
     }
 
-    /**
-     * 오늘을 포함한 최근 7일간의 매출 합계를 반환
-     */
+    // 오늘을 포함한 최근 7일간의 매출 합계를 계산해서 반환
     public int getWeeklySales() {
         int totalSales = 0;
         LocalDate today = LocalDate.now();

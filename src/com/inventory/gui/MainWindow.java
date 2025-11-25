@@ -35,7 +35,7 @@ public class MainWindow extends JFrame implements ItemObserver {
     public MainWindow(Member member) {
         this.loggedInMember = member;
 
-        setTitle("👖 재고 관리 (" + member.getName() + "님)");
+        setTitle("바지 재고 관리 (" + member.getName() + "님)");
         setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -44,16 +44,16 @@ public class MainWindow extends JFrame implements ItemObserver {
         // 옵저버 등록
         ItemManager.getInstance().addObserver(this);
 
-        // 1. 좌측 버튼 패널
+        // 좌측 버튼 패널
         add(createLeftPanel(), BorderLayout.WEST);
 
-        // 2. 중앙 테이블 패널
+        // 중앙 테이블 패널
         add(createTablePanel(), BorderLayout.CENTER);
 
-        // 3. 하단 상태바 패널
+        // 하단 상태바 패널
         add(new StatusPanel(), BorderLayout.SOUTH);
 
-        // 4. 초기 데이터 로드
+        // 초기 데이터 로드
         refreshTableData();
     }
 
@@ -63,7 +63,7 @@ public class MainWindow extends JFrame implements ItemObserver {
         leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         leftPanel.setPreferredSize(new Dimension(190, 0));
 
-        // --- 상단: 기능 버튼 그룹 ---
+        // 상단: 기능 버튼 그룹
         JPanel functionPanel = new JPanel();
         functionPanel.setLayout(new BoxLayout(functionPanel, BoxLayout.Y_AXIS));
 

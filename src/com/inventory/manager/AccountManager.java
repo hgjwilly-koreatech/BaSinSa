@@ -6,7 +6,6 @@ import com.inventory.model.Member;
 import com.inventory.model.NormalMember;
 
 import java.util.List;
-import java.util.Optional;
 
 public class AccountManager {
     private static final AccountManager instance = new AccountManager();

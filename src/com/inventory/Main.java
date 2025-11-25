@@ -2,7 +2,6 @@ package com.inventory;
 
 import com.inventory.gui.LoginWindow;
 
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 public class Main {

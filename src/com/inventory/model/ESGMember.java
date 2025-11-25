@@ -28,7 +28,7 @@ public class ESGMember extends Member implements IItemManagable {
 
     @Override
     public void move(Item item) {
-        // ESG 사원은 ESG 재고 -> 일반 재고로 이동 (ESG 활용 여부가 True여야 함)
+        // ESG 사원은 ESG 재고 -> 일반 재고로 이동
         if (item.getLocation() == ItemLocation.ESG && item.isESG()) {
             item.setLocation(ItemLocation.NORMAL);
             ItemManager.getInstance().updateItem(item);
@@ -38,22 +38,16 @@ public class ESGMember extends Member implements IItemManagable {
         }
     }
 
-    /**
-     * ESG 사원에게 outgoing은 '폐기'를 의미합니다.
-     * 매출을 올리지 않고 아이템을 리스트에서 제거합니다.
-     */
+    // 물품 폐기
     @Override
     public void outgoing(Item item) {
         if (item.getLocation() == ItemLocation.ESG) {
             ItemManager.getInstance().removeItem(item);
-            // SalesManager 호출하지 않음 (폐기이므로 매출 0)
             System.out.println("ESG 아이템 폐기 완료: " + item.getItemNumber());
         }
     }
 
-    /**
-     * ESG 재고를 ESG 바지로 변경 (재활용)
-     */
+    // ESG 재고를 ESG 바지로 변경
     public void recycle(Item item) {
         if (item.getLocation() != ItemLocation.ESG) return;
         if (item.isESG()) {
@@ -65,7 +59,6 @@ public class ESGMember extends Member implements IItemManagable {
             return;
         }
 
-        // 재질은 그대로, ESG 플래그 true로 변경
         item.setESG(true);
 
         // 품질, 단가, 물품번호 변경 (랜덤)

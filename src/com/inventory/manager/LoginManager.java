@@ -9,7 +9,6 @@ public class LoginManager {
     private List<Member> memberList;
 
     private LoginManager() {
-        // AccountManager에서 사원 리스트를 가져옴
         this.memberList = AccountManager.getInstance().getMemberList();
     }
 
@@ -17,16 +16,12 @@ public class LoginManager {
         return instance;
     }
 
-    /**
-     * 로그인을 시도
-     * @return 성공 시 Member 객체, 실패 시 null
-     */
     public Member login(String id, String password) {
         for (Member member : memberList) {
             if (member.getId().equals(id) && member.getPassword().equals(password)) {
-                return member; // 로그인 성공
+                return member; // 로그인 성공!
             }
         }
-        return null; // 로그인 실패
+        return null; // 로그인 실패ㅠㅠ
     }
 }

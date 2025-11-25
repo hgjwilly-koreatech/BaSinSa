@@ -6,7 +6,6 @@ import com.inventory.manager.SalesManager;
 import com.inventory.model.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;

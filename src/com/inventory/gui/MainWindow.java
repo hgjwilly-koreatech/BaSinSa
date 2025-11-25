@@ -6,7 +6,6 @@ import com.inventory.manager.SalesManager;
 import com.inventory.model.*;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -35,7 +34,7 @@ public class MainWindow extends JFrame implements ItemObserver {
     public MainWindow(Member member) {
         this.loggedInMember = member;
 
-        setTitle("👖 재고 관리 (" + member.getName() + "님)");
+        setTitle("바지 재고 관리 (" + member.getName() + "님)");
         setSize(1100, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -44,16 +43,16 @@ public class MainWindow extends JFrame implements ItemObserver {
         // 옵저버 등록
         ItemManager.getInstance().addObserver(this);
 
-        // 1. 좌측 버튼 패널
+        // 좌측 버튼 패널
         add(createLeftPanel(), BorderLayout.WEST);
 
-        // 2. 중앙 테이블 패널
+        // 중앙 테이블 패널
         add(createTablePanel(), BorderLayout.CENTER);
 
-        // 3. 하단 상태바 패널
+        // 하단 상태바 패널
         add(new StatusPanel(), BorderLayout.SOUTH);
 
-        // 4. 초기 데이터 로드
+        // 초기 데이터 로드
         refreshTableData();
     }
 
@@ -63,7 +62,7 @@ public class MainWindow extends JFrame implements ItemObserver {
         leftPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         leftPanel.setPreferredSize(new Dimension(190, 0));
 
-        // --- 상단: 기능 버튼 그룹 ---
+        // 상단: 기능 버튼 그룹
         JPanel functionPanel = new JPanel();
         functionPanel.setLayout(new BoxLayout(functionPanel, BoxLayout.Y_AXIS));
 
@@ -204,7 +203,7 @@ public class MainWindow extends JFrame implements ItemObserver {
 
         Map<LocalDate, Integer> salesMap = SalesManager.getInstance().getDailySalesMap();
 
-        // 1. 데이터 준비 (전체)
+        //데이터 준비 (전체)
         String[] columnNames = {"날짜", "매출액(원)"};
         DefaultTableModel salesModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -234,52 +233,16 @@ public class MainWindow extends JFrame implements ItemObserver {
             }
         }
 
-        // 2. 테이블 생성
+        //테이블 생성
         JTable salesTable = new JTable(salesModel);
         salesTable.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
         salesTable.setRowHeight(30);
 
-        // 커스텀 렌더러: 최근 7일 초록색 강조 및 금액 우측 정렬
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                // 날짜 파싱 및 색상 적용
-                String dateStr = (String) table.getModel().getValueAt(row, 0);
-                try {
-                    LocalDate rowDate = LocalDate.parse(dateStr);
-                    if (!isSelected) {
-                        if (!rowDate.isBefore(startOfWeekly) && !rowDate.isAfter(today)) {
-                            c.setBackground(new Color(200, 255, 200)); // 연한 초록색 (Light Green)
-                        } else {
-                            c.setBackground(Color.WHITE);
-                        }
-                    }
-                } catch (Exception e) {
-                    // 날짜 파싱 실패 시 무시
-                }
-
-                // 금액 컬럼 우측 정렬
-                if (column == 1) {
-                    setHorizontalAlignment(JLabel.RIGHT);
-                } else {
-                    setHorizontalAlignment(JLabel.LEFT);
-                }
-
-                return c;
-            }
-        };
-
-        // 모든 컬럼에 렌더러 적용
-        for (int i = 0; i < salesTable.getColumnCount(); i++) {
-            salesTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
-        }
-
+        
         JScrollPane scrollPane = new JScrollPane(salesTable);
         dialog.add(scrollPane, BorderLayout.CENTER);
 
-        // 3. 하단 정보 및 닫기 버튼 패널
+        //하단 정보 및 닫기 버튼 패널
         JPanel bottomPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
@@ -287,11 +250,11 @@ public class MainWindow extends JFrame implements ItemObserver {
         JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         JLabel weeklyLabel = new JLabel("최근 7일 매출: " + nf.format(weeklyTotal) + "원");
         weeklyLabel.setFont(new Font("맑은 고딕", Font.BOLD, 15));
-        weeklyLabel.setForeground(new Color(34, 139, 34)); // Forest Green
+        weeklyLabel.setForeground(Color.green);
 
         JLabel totalLabel = new JLabel("총 누적 매출: " + nf.format(grandTotal) + "원");
         totalLabel.setFont(new Font("맑은 고딕", Font.BOLD, 15));
-        totalLabel.setForeground(new Color(139, 0, 0)); // Dark Red
+        totalLabel.setForeground(Color.red);
 
         statsPanel.add(weeklyLabel);
         statsPanel.add(new JSeparator(SwingConstants.VERTICAL));

@@ -14,23 +14,21 @@ public class ItemDetailPopup extends JDialog {
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout(10, 10));
 
-        // 1. 상세 정보 패널
+        //상세 정보 패널
         JTextArea detailArea = new JTextArea();
         detailArea.setEditable(false);
         detailArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
         detailArea.setText(buildDetailString(item));
         add(new JScrollPane(detailArea), BorderLayout.CENTER);
 
-        // 2. 기능 버튼 패널 (IItemManagable 구현 여부에 따라 버튼 생성)
+        //기능 버튼 패널 (IItemManagable 구현 여부에 따라 버튼 생성)
         if (member instanceof IItemManagable) {
             JPanel buttonPanel = createActionButtons((IItemManagable) member, item);
             add(buttonPanel, BorderLayout.SOUTH);
         }
     }
 
-    /**
-     * IItemManagable 구현체(Normal, ESG)에 따른 버튼 생성 로직
-     */
+    //IItemManagable에 따른 버튼 생성 로직
     private JPanel createActionButtons(IItemManagable manager, Item item) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(0, 1, 5, 5)); // 세로로 버튼 쌓기
@@ -57,10 +55,10 @@ public class ItemDetailPopup extends JDialog {
 
             // ESG 멤버의 폐기 버튼일 경우 빨간색 강조
             if (isESGMember) {
-                outBtn.setBackground(new Color(220, 20, 60)); // Crimson
+                outBtn.setBackground(Color.red);
                 outBtn.setForeground(Color.BLACK);
             } else {
-                outBtn.setBackground(new Color(34, 139, 34)); // Forest Green (판매는 수익이므로 초록 계열 추천)
+                outBtn.setBackground(Color.green);
                 outBtn.setForeground(Color.BLACK);
             }
 
@@ -76,7 +74,7 @@ public class ItemDetailPopup extends JDialog {
             });
             panel.add(outBtn);
 
-            // 3. Recycle 버튼 (ESG 멤버 전용, 조건부 표시)
+            // Recycle 버튼 (ESG 멤버 전용)
             if (isESGMember) {
                 if (!item.isESG() && item.getType() != PantsType.SHORTS) {
                     JButton recycleBtn = new JButton("ESG 바지로 변경 (재활용)");
@@ -89,7 +87,7 @@ public class ItemDetailPopup extends JDialog {
                 }
             }
         } else {
-            // 자신의 담당 구역이 아닐 경우 (예: 일반 사원이 ESG 재고 클릭)
+            // 자신의 담당 구역이 아닐 경우
             JLabel infoLabel = new JLabel("이 재고에 대한 관리 권한이 없습니다.", SwingConstants.CENTER);
             panel.add(infoLabel);
         }

@@ -13,7 +13,6 @@ public class ItemManager {
     private static final String ITEM_FILE = "items.txt";
     private List<Item> itemList;
 
-    // 옵저버 리스트 추가
     private List<ItemObserver> observers = new ArrayList<>();
 
     private ItemManager() {
@@ -53,37 +52,45 @@ public class ItemManager {
 
     // --- 아이템 조회 ---
     public List<Item> getAllItems() {
-        return new ArrayList<>(itemList); // 원본 리스트 보호
+        return new ArrayList<>(itemList);
     }
 
     public List<Item> getNormalItems() {
-        return itemList.stream()
-                .filter(item -> item.getLocation() == ItemLocation.NORMAL)
-                .collect(Collectors.toList());
+        List<Item> normalItems = new ArrayList<>(); 
+        for (Item item : itemList) {
+            if (item.getLocation() == ItemLocation.NORMAL) {
+                normalItems.add(item); 
+            }
+        }
+        return normalItems;
     }
 
     public List<Item> getESGItems() {
-        return itemList.stream()
-                .filter(item -> item.getLocation() == ItemLocation.ESG)
-                .collect(Collectors.toList());
+        List<Item> esgItems = new ArrayList<>(); 
+        for (Item item : itemList) {
+            if (item.getLocation() == ItemLocation.ESG) {
+                esgItems.add(item); 
+            }
+        }
+        return esgItems;
     }
 
     // --- 아이템 관리 (옵저버 알림 추가) ---
     public void addItem(Item item) {
         itemList.add(item);
         saveItems();
-        notifyItemAdded(item); // 알림 발송
+        notifyItemAdded(item);
     }
 
     public void removeItem(Item item) {
         itemList.remove(item);
         saveItems();
-        notifyItemRemoved(item); // 알림 발송
+        notifyItemRemoved(item);
     }
 
     public void updateItem(Item item) {
         saveItems();
-        notifyItemUpdated(item); // 알림 발송
+        notifyItemUpdated(item);
     }
 
     private void saveItems() {

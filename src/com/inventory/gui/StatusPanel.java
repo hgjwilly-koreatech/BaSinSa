@@ -19,7 +19,7 @@ public class StatusPanel extends JPanel implements ItemObserver {
     public StatusPanel() {
         setLayout(new FlowLayout(FlowLayout.LEFT, 20, 5));
         setBorder(new BevelBorder(BevelBorder.LOWERED));
-        setBackground(new Color(240, 240, 240));
+        setBackground(Color.lightGray);
 
         totalLabel = new JLabel("총 재고: 0");
         totalLabel.setFont(new Font("맑은 고딕", Font.BOLD, 12));
@@ -28,7 +28,7 @@ public class StatusPanel extends JPanel implements ItemObserver {
         normalLabel.setForeground(Color.BLUE);
 
         esgLabel = new JLabel("ESG: 0");
-        esgLabel.setForeground(new Color(34, 139, 34)); // Forest Green
+        esgLabel.setForeground(Color.GREEN);
 
         add(totalLabel);
         add(new JSeparator(SwingConstants.VERTICAL));
@@ -36,11 +36,8 @@ public class StatusPanel extends JPanel implements ItemObserver {
         add(new JSeparator(SwingConstants.VERTICAL));
         add(esgLabel);
 
-        // 생성되자마자 옵저버로 등록
-        ItemManager.getInstance().addObserver(this);
-
-        // 초기값 설정
-        updateStatus();
+        ItemManager.getInstance().addObserver(this); // 옵저버 등록
+        updateStatus(); // 초기값 설정하기
     }
 
     private void updateStatus() {

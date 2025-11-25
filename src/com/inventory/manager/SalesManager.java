@@ -9,7 +9,6 @@ public class SalesManager {
     private static final SalesManager instance = new SalesManager();
     private static final String SALES_FILE = "sales.txt";
 
-    // 일자별 총 매출 저장
     private Map<LocalDate, Integer> dailySales;
 
     private SalesManager() {

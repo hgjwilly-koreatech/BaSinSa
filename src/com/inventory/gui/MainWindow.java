@@ -251,11 +251,11 @@ public class MainWindow extends JFrame implements ItemObserver {
         JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         JLabel weeklyLabel = new JLabel("최근 7일 매출: " + nf.format(weeklyTotal) + "원");
         weeklyLabel.setFont(new Font("맑은 고딕", Font.BOLD, 15));
-        weeklyLabel.setForeground(new Color(34, 139, 34)); // Forest Green
+        weeklyLabel.setForeground(Color.green);
 
         JLabel totalLabel = new JLabel("총 누적 매출: " + nf.format(grandTotal) + "원");
         totalLabel.setFont(new Font("맑은 고딕", Font.BOLD, 15));
-        totalLabel.setForeground(new Color(139, 0, 0)); // Dark Red
+        totalLabel.setForeground(Color.red);
 
         statsPanel.add(weeklyLabel);
         statsPanel.add(new JSeparator(SwingConstants.VERTICAL));

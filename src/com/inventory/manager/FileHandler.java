@@ -10,9 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * txt 파일 읽기/쓰기를 담당하는 유틸리티 클래스
- */
+ //txt 파일 읽기/쓰기를 담당하는 유틸리티 클래스
 public class FileHandler {
 
     // --- Member 파일 ---

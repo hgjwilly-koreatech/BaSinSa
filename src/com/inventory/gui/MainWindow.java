@@ -239,43 +239,7 @@ public class MainWindow extends JFrame implements ItemObserver {
         salesTable.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
         salesTable.setRowHeight(30);
 
-        // 커스텀 렌더러: 최근 7일 초록색 강조 및 금액 우측 정렬
-        DefaultTableCellRenderer renderer = new DefaultTableCellRenderer() {
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-                // 날짜 파싱 및 색상 적용
-                String dateStr = (String) table.getModel().getValueAt(row, 0);
-                try {
-                    LocalDate rowDate = LocalDate.parse(dateStr);
-                    if (!isSelected) {
-                        if (!rowDate.isBefore(startOfWeekly) && !rowDate.isAfter(today)) {
-                            c.setBackground(new Color(200, 255, 200)); // 연한 초록색 (Light Green)
-                        } else {
-                            c.setBackground(Color.WHITE);
-                        }
-                    }
-                } catch (Exception e) {
-                    // 날짜 파싱 실패 시 무시
-                }
-
-                // 금액 컬럼 우측 정렬
-                if (column == 1) {
-                    setHorizontalAlignment(JLabel.RIGHT);
-                } else {
-                    setHorizontalAlignment(JLabel.LEFT);
-                }
-
-                return c;
-            }
-        };
-
-        // 모든 컬럼에 렌더러 적용
-        for (int i = 0; i < salesTable.getColumnCount(); i++) {
-            salesTable.getColumnModel().getColumn(i).setCellRenderer(renderer);
-        }
-
+        
         JScrollPane scrollPane = new JScrollPane(salesTable);
         dialog.add(scrollPane, BorderLayout.CENTER);
 

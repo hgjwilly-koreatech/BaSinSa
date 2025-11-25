@@ -57,7 +57,14 @@ public class AccountManager {
     }
 
     public void removeMember(String id) {
-        memberList.removeIf(member -> member.getId().equals(id) && !(member instanceof CEO)); // CEO는 삭제 방지
+        if(memberList.isEmpty()) return;
+
+        for (Member member : memberList) {
+            if(member.getId().equals(id)) {
+                if(member instanceof CEO) return;
+                else memberList.remove(member);
+            }
+        }
         saveMembers();
     }
 

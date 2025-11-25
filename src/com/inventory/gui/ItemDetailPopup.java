@@ -21,7 +21,7 @@ public class ItemDetailPopup extends JDialog {
         detailArea.setText(buildDetailString(item));
         add(new JScrollPane(detailArea), BorderLayout.CENTER);
 
-        //기능 버튼 패널 (IItemManagable 구현 여부에 따라 버튼 생성)
+        //기능 버튼 패널
         if (member instanceof IItemManagable) {
             JPanel buttonPanel = createActionButtons((IItemManagable) member, item);
             add(buttonPanel, BorderLayout.SOUTH);

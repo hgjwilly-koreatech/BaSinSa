@@ -16,7 +16,7 @@ public class LoginWindow extends JFrame {
         setLocationRelativeTo(null); // 화면 중앙에 배치
         setLayout(new BorderLayout(20, 20)); // 간격 확대
 
-        // 메인 컨테이너 패널 (여백 추가)
+        // 메인 컨테이너 패널
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
         mainPanel.setBorder(new EmptyBorder(20, 40, 20, 40)); // 상하좌우 여백 넉넉히
 

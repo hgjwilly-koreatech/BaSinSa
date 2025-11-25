@@ -3,25 +3,20 @@ package com.inventory.manager;
 import com.inventory.model.*;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * txt 파일 읽기/쓰기를 담당하는 유틸리티 클래스
- */
-public class FileHandler {
 
-    // --- Member 파일 ---
+public class FileHandler {
     public static List<Member> loadMembers(String filename) {
         List<Member> members = new ArrayList<>();
         File file = new File(filename);
-        if (!file.exists()) return members; // 파일 없으면 빈 리스트 반환
+        if (!file.exists()) return members;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -43,7 +38,7 @@ public class FileHandler {
                         break;
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.print("끼야악00 - ");
             System.out.println(e.getMessage());
         }
@@ -51,24 +46,23 @@ public class FileHandler {
     }
 
     public static void saveMembers(String filename, List<Member> members) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
             for (Member member : members) {
                 bw.write(member.toFileString());
                 bw.newLine();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.print("끼야악00 - ");
             System.out.println(e.getMessage());
         }
     }
 
-    // --- Item 파일 ---
     public static List<Item> loadItems(String filename) {
         List<Item> items = new ArrayList<>();
         File file = new File(filename);
         if (!file.exists()) return items;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 Item item = Item.fromFileString(line);
@@ -76,7 +70,7 @@ public class FileHandler {
                     items.add(item);
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.print("끼야악00 - ");
             System.out.println(e.getMessage());
         }
@@ -84,24 +78,23 @@ public class FileHandler {
     }
 
     public static void saveItems(String filename, List<Item> items) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
             for (Item item : items) {
                 bw.write(item.toFileString());
                 bw.newLine();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.print("끼야악00 - ");
             System.out.println(e.getMessage());
         }
     }
 
-    // --- Sales 파일 ---
     public static Map<LocalDate, Integer> loadSales(String filename) {
         Map<LocalDate, Integer> sales = new HashMap<>();
         File file = new File(filename);
         if (!file.exists()) return sales;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file, StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
@@ -118,12 +111,12 @@ public class FileHandler {
     }
 
     public static void saveSales(String filename, Map<LocalDate, Integer> sales) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename, StandardCharsets.UTF_8))) {
-            for (Map.Entry<LocalDate, Integer> entry : sales.entrySet()) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filename))) {
+            for (var entry : sales.entrySet()) {
                 bw.write(entry.getKey().toString() + "," + entry.getValue());
                 bw.newLine();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.print("끼야악00 - ");
             System.out.println(e.getMessage());
         }

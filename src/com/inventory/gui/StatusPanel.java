@@ -9,9 +9,7 @@ import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.util.List;
 
-// 화면 하단에 현재 재고 현황을 실시간으로 보여주는 패널
-// ItemObserver를 구현하여 데이터 변경 시 자동으로 갱신됨
-
+//화면 하단에 현재 재고 현황을 실시간으로 보여주는 패널
 public class StatusPanel extends JPanel implements ItemObserver {
 
     private JLabel totalLabel;

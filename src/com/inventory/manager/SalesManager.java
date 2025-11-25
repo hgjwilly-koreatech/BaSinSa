@@ -23,10 +23,11 @@ public class SalesManager {
         LocalDate date = timestamp.toLocalDate();
         dailySales.put(date, dailySales.getOrDefault(date, 0) + amount);
 
+        // 매출 발생 시마다 즉시 저장
         FileHandler.saveSales(SALES_FILE, dailySales);
     }
 
-    // 오늘을 포함한 최근 7일간의 매출 합계를 계산해서 반환
+    //오늘을 포함한 최근 7일간의 매출 합계를 반환
     public int getWeeklySales() {
         int totalSales = 0;
         LocalDate today = LocalDate.now();

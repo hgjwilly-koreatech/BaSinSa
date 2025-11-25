@@ -50,7 +50,7 @@ public class Item {
 
     // txt 파일 저장을 위한 문자열 변환
     public String toFileString() {
-        // 구분자(delimiter)로 콤마(,) 사용
+        // 구분자로 (,) 사용
         return String.join(",",
                 itemNumber,
                 type.name(),

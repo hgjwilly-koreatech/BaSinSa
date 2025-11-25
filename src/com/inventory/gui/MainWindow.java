@@ -333,14 +333,7 @@ public class MainWindow extends JFrame implements ItemObserver {
         JScrollPane scrollPane = new JScrollPane(memberTable);
         dialog.add(scrollPane, BorderLayout.CENTER);
 
-        Runnable loadData = () -> {
-            memberTableModel.setRowCount(0);
-            List<Member> members = AccountManager.getInstance().getMemberList();
-            for (Member m : members) {
-                memberTableModel.addRow(new Object[]{m.getMemberType(), m.getId(), m.getPassword(), m.getName()});
-            }
-        };
-        loadData.run();
+        loadTable(memberTableModel);
 
         // --- 2. 하단 버튼 패널 ---
         JPanel bottomPanel = new JPanel(new BorderLayout());
@@ -410,7 +403,7 @@ public class MainWindow extends JFrame implements ItemObserver {
 
                 try {
                     AccountManager.getInstance().addMember(type, id, pw, name);
-                    loadData.run();
+                    loadTable(memberTableModel);
                     JOptionPane.showMessageDialog(dialog, "사원이 추가되었습니다.");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(dialog, "추가 실패: " + ex.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
@@ -440,11 +433,20 @@ public class MainWindow extends JFrame implements ItemObserver {
 
             if (confirm == JOptionPane.YES_OPTION) {
                 AccountManager.getInstance().removeMember(id);
-                loadData.run();
+                loadTable(memberTableModel);
                 JOptionPane.showMessageDialog(dialog, "삭제되었습니다.");
             }
         });
 
         dialog.setVisible(true);
+    }
+
+    private void loadTable(DefaultTableModel table)
+    {
+        table.setRowCount(0);
+        List<Member> members = AccountManager.getInstance().getMemberList();
+        for (Member m : members) {
+            table.addRow(new Object[]{m.getMemberType(), m.getId(), m.getPassword(), m.getName()});
+        }
     }
 }

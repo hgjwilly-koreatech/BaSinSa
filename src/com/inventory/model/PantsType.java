@@ -1,8 +1,5 @@
 package com.inventory.model;
-
-/**
- * 바지 종류를 나타내는 열거형 (Enum)
- */
+//바지 종류
 public enum PantsType {
     LONG("긴바지"),
     SEVENTH("칠부바지"),

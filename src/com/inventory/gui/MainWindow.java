@@ -203,7 +203,7 @@ public class MainWindow extends JFrame implements ItemObserver {
 
         Map<LocalDate, Integer> salesMap = SalesManager.getInstance().getDailySalesMap();
 
-        // 1. 데이터 준비 (전체)
+        //데이터 준비 (전체)
         String[] columnNames = {"날짜", "매출액(원)"};
         DefaultTableModel salesModel = new DefaultTableModel(columnNames, 0) {
             @Override
@@ -233,7 +233,7 @@ public class MainWindow extends JFrame implements ItemObserver {
             }
         }
 
-        // 2. 테이블 생성
+        //테이블 생성
         JTable salesTable = new JTable(salesModel);
         salesTable.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
         salesTable.setRowHeight(30);
@@ -242,7 +242,7 @@ public class MainWindow extends JFrame implements ItemObserver {
         JScrollPane scrollPane = new JScrollPane(salesTable);
         dialog.add(scrollPane, BorderLayout.CENTER);
 
-        // 3. 하단 정보 및 닫기 버튼 패널
+        //하단 정보 및 닫기 버튼 패널
         JPanel bottomPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         bottomPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 

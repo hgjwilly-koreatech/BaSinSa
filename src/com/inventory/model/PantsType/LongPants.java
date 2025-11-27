@@ -7,9 +7,20 @@ public class LongPants extends PantsState {
     }
 
     @Override
-    public boolean recycle() {
-        type = PantsType.values()[rand.nextInt(4)];
-        return true;
+    public PantsState recycle() {
+        int randNum = rand.nextInt(100);
+
+        if(randNum < 10) {
+            return new  LongPants();
+        }
+        else if(randNum < 30) {
+            return new SeventhPants();
+        }
+        else if(randNum < 70) {
+            return new HalfPants();
+        }
+        else
+            return new ShortPants();
     }
 
     @Override

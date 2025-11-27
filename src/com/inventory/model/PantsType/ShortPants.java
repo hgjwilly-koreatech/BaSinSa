@@ -7,8 +7,8 @@ public class ShortPants extends PantsState {
     }
 
     @Override
-    public boolean recycle() {
-        return false;
+    public PantsState recycle() {
+        return null;
     }
 
     @Override

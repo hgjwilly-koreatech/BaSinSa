@@ -13,7 +13,7 @@ public abstract class PantsState {
         return type;
     }
 
-    public abstract boolean recycle();
+    public abstract PantsState recycle();
 
     @Override
     public abstract String toString();

@@ -68,7 +68,7 @@ public class ESGMember extends Member implements IItemManagable {
         item.setPrice((rand.nextInt(10) + 5) * 1000); // 5000 ~ 15000
         item.setItemNumber(UUID.randomUUID().toString().substring(0, 8)); // 새 물품 번호
 
-        item.getPantsState().recycle();
+        item.setState(item.getPantsState().recycle());
 
         ItemManager.getInstance().updateItem(item);
         JOptionPane.showMessageDialog(null, "재활용 완료. 새 물품번호: " + item.getItemNumber(), "재활용 성공", JOptionPane.INFORMATION_MESSAGE);

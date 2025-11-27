@@ -6,7 +6,6 @@ import com.inventory.model.ItemObserver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ItemManager {
     private static final ItemManager instance = new ItemManager();
@@ -23,7 +22,7 @@ public class ItemManager {
         return instance;
     }
 
-    // --- 옵저버 패턴 메서드 ---
+    // 옵저버 패턴 메서드
     public void addObserver(ItemObserver observer) {
         observers.add(observer);
     }
@@ -50,7 +49,6 @@ public class ItemManager {
         }
     }
 
-    // --- 아이템 조회 ---
     public List<Item> getAllItems() {
         return new ArrayList<>(itemList);
     }

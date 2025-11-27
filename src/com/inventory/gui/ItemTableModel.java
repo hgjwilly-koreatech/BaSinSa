@@ -45,7 +45,7 @@ public class ItemTableModel extends AbstractTableModel {
         Item item = items.get(rowIndex);
         switch (columnIndex) {
             case 0: return item.getItemNumber();
-            case 1: return item.getType().toString();
+            case 1: return item.getPantsState().toName();
             case 2: return item.getMaterial();
             case 3: return item.getQuality();
             case 4: return item.getLocation().toString();

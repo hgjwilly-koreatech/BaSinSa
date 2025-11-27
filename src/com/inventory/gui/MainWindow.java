@@ -96,7 +96,7 @@ public class MainWindow extends JFrame implements ItemObserver {
             // 관리 버튼
             functionPanel.add(createStyledButton("사원 관리", e -> showMemberManagement()));
             functionPanel.add(Box.createVerticalStrut(5));
-            functionPanel.add(createStyledButton("주간 매출 확인", e -> showWeeklySales()));
+            functionPanel.add(createStyledButton("매출 확인", e -> showWeeklySales()));
         }
 
         JPanel topContainer = new JPanel(new BorderLayout());
@@ -250,11 +250,11 @@ public class MainWindow extends JFrame implements ItemObserver {
         JPanel statsPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         JLabel weeklyLabel = new JLabel("최근 7일 매출: " + nf.format(weeklyTotal) + "원");
         weeklyLabel.setFont(new Font("맑은 고딕", Font.BOLD, 15));
-        weeklyLabel.setForeground(Color.green);
+        //weeklyLabel.setForeground(Color.green);
 
         JLabel totalLabel = new JLabel("총 누적 매출: " + nf.format(grandTotal) + "원");
         totalLabel.setFont(new Font("맑은 고딕", Font.BOLD, 15));
-        totalLabel.setForeground(Color.red);
+        //totalLabel.setForeground(Color.red);
 
         statsPanel.add(weeklyLabel);
         statsPanel.add(new JSeparator(SwingConstants.VERTICAL));

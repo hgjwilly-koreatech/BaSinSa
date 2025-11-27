@@ -1,3 +1,4 @@
+
 package com.inventory.model;
 
 import com.inventory.manager.ItemManager;

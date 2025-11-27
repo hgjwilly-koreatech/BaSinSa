@@ -196,7 +196,7 @@ public class MainWindow extends JFrame implements ItemObserver {
 
     //주간 및 전체 매출 확인 (테이블: 전체 데이터, 강조: 최근 7일)
     private void showWeeklySales() {
-        JDialog dialog = new JDialog(this, "전체 매출 현황 (최근 7일 강조)", true);
+        JDialog dialog = new JDialog(this, "전체 매출 현황", true);
         dialog.setSize(500, 600);
         dialog.setLocationRelativeTo(this);
         dialog.setLayout(new BorderLayout(10, 10));

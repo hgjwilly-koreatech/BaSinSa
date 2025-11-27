@@ -2,6 +2,7 @@ package com.inventory.model;
 
 import com.inventory.manager.ItemManager;
 import com.inventory.manager.SalesManager;
+import com.inventory.model.PantsType.PantsType;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
@@ -36,7 +37,7 @@ public class NormalMember extends Member implements IItemManagable {
             PantsType type = PantsType.valueOf(typeStr);
 
             Item newItem = new ItemBuilder()
-                    .type(type)
+                    .state(type)
                     .isESG(false)
                     .location(ItemLocation.NORMAL)
                     .material(material)

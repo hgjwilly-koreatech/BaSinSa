@@ -1,6 +1,8 @@
 package com.inventory.gui;
 
 import com.inventory.model.*;
+import com.inventory.model.PantsType.PantsType;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -76,7 +78,7 @@ public class ItemDetailPopup extends JDialog {
 
             // Recycle 버튼 (ESG 멤버 전용)
             if (isESGMember) {
-                if (!item.isESG() && item.getType() != PantsType.SHORTS) {
+                if (!item.isESG() && item.getPantsState().getType() != PantsType.SHORTS) {
                     JButton recycleBtn = new JButton("ESG 바지로 변경 (재활용)");
                     recycleBtn.addActionListener(e -> {
                         ((ESGMember) manager).recycle(item);
@@ -98,7 +100,7 @@ public class ItemDetailPopup extends JDialog {
     private String buildDetailString(Item item) {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("물품 번호: %s\n", item.getItemNumber()));
-        sb.append(String.format("바지 종류: %s\n", item.getType()));
+        sb.append(String.format("바지 종류: %s\n", item.getPantsState().toName()));
         sb.append(String.format("재      질: %s\n", item.getMaterial()));
         sb.append(String.format("품      질: %s\n", item.getQuality()));
         sb.append(String.format("단      가: %d원\n", item.getPrice()));

@@ -2,4 +2,4 @@ CEO,admin,1234,최고관리자
 Normal,normal1,1111,김일반
 ESG,esg1,2222,박친환경
 Normal,normal2,3333,이성실
-Normal,qwer,1234,버러지
+Normal,test1,1111,테스트

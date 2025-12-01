@@ -58,7 +58,7 @@ public class ItemBuilder {
     {
         pantsState = convertPantsState(PantsType.values()[rand.nextInt(PantsType.values().length)]);
         material = new String[]{"데님", "면", "폴리에스터", "혼방"}[rand.nextInt(4)];
-        quality = new String[]{"상", "중", "하"}[rand.nextInt(3)];
+        quality = new String[]{"A급", "B급", "C급"}[rand.nextInt(3)];
         price = (rand.nextInt(5) + 1) * 1000; // 1000 ~ 5000
         itemNumber = UUID.randomUUID().toString().substring(0, 8);
 

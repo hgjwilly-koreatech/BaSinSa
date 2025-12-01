@@ -62,7 +62,11 @@ public class AccountManager {
         for (Member member : memberList) {
             if(member.getId().equals(id)) {
                 if(member instanceof CEO) return;
-                else memberList.remove(member);
+                else
+                {
+                    memberList.remove(member);
+                    break;
+                }
             }
         }
         saveMembers();
